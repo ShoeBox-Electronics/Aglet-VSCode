@@ -1,0 +1,27 @@
+{
+  "name": "aglet",
+  "displayName": "Aglet",
+  "description": "Syntax highlighter for the Aglet programming language.",
+  "version": "0.0.1",
+  "publisher": "Shoebox-Electronics",
+  "repository": {
+    "type": "github",
+    "url": "https://github.com/ShoeBox-Electronics/Aglet-VSCode"
+  },
+  "engines": {
+    "vscode": ">=1.80.0"
+  },
+  "contributes": {
+    "languages": [{
+      "id": "aglet",
+      "aliases": ["Aglet", "aglet"],
+      "extensions": [".aglet"],
+      "configuration": "./language-configuration.json"
+    }],
+    "grammars": [{
+      "language": "aglet",
+      "scopeName": "source.aglet",
+      "path": "./syntaxes/aglet.tmLanguage.json"
+    }]
+  }
+}

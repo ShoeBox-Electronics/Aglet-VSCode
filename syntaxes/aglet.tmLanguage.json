@@ -1,0 +1,64 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "Aglet",
+	"patterns": [
+		{ "include": "#comments" },
+		{ "include": "#keywords" },
+		{ "include": "#operators" },
+		{ "include": "#values" }
+	],
+	"repository": {
+		"comments": {
+			"patterns": [
+				{
+					"name": "comment.line.aglet",
+					"match": "//.*\n?"
+				},
+				{
+					"name": "comment.block.aglet",
+					"begin": "/\\*",
+					"end": "\\*/"
+				}
+			]
+		},
+		"keywords": {
+			"patterns": [
+				{
+					"name": "keyword.control.aglet",
+					"match": "\\b(funk|ret|if|else)\\b"
+				},
+				{
+					"name": "keyword.aglet",
+					"match": "\\b(let|set)\\b"
+				}
+			]
+		},
+
+		"values": {
+			"patterns": [
+				{
+					"name": "entity.name.variable.aglet",
+					"match": "\\b[a-zA-Z_]\\w*\\b(?![ \\t]*\\()"
+				},
+				{
+					"name": "constant.numeric.aglet",
+					"match": "\\b(0x[0-9a-fA-F_]*|0b[01_]*|[0-9][0-9_]*(\\.[0-9_]+)?|\\.[0-9][0-9_]*)\\b"
+				},
+				{
+					"name": "entity.name.function.aglet",
+					"match": "(\\.[ \\t]*)?\\b[a-zA-Z_]\\w*(?=[ \\t]*\\()\\b"
+				}
+			]
+		},
+
+		"operators": {
+			"patterns": [
+				{
+					"name": "support.type.aglet",
+					"match": "(?<=(:|->)\\s+)[a-zA-Z_]\\w*\\b"
+				}
+			]
+		}
+	},
+	"scopeName": "source.aglet"
+}
