@@ -16,9 +16,7 @@ import {
 import { TextDocument } from "vscode-languageserver-textdocument"
 
 import * as fs from 'fs'
-import simpleGit, { SimpleGit } from 'simple-git'
 import { spawn } from 'child_process'
-import * as rimraf from 'rimraf'
 
 // Create a connection for the server, using Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
@@ -64,20 +62,19 @@ function command(command: string, args: string[], opts: any, onoutput: any, inpu
 }
 
 async function install_compiler() {
-  const git: SimpleGit = simpleGit()
   const dir = __dirname + '/build'
-
-  // try {
-  //   await rimraf.rimraf(dir)
-  // } catch (err: any) {
-  //   connection.sendNotification('error', err.toString())
-  // }
 
   try { fs.statSync(dir) }
   catch (_) {
     try {
       connection.sendNotification('status', 'Downloading Aglet compiler...')
-      await git.clone('https://github.com/ShoeBox-Electronics/Aglet.git', dir)
+      await command('git', ['clone', 'https://github.com/ShoeBox-Electronics/Aglet.git', dir], {}, () => {})
+      try { fs.statSync(dir) }
+      catch (e) {
+        connection.sendNotification('error', 'Failed to clone Aglet compiler')
+        connection.sendNotification('hide-status')
+        return
+      }
     } catch (e) {
       connection.sendNotification('error', 'Failed to install Aglet compiler')
       connection.sendNotification('hide-status')
@@ -86,8 +83,7 @@ async function install_compiler() {
   }
 
   connection.sendNotification('status', 'Checking for updates...')
-  await git.cwd(dir)
-  await git.pull()
+  await command('git', ['pull'], {cwd: dir}, () => {})
 
   await command('cargo', ['build', '--release'], {cwd: dir}, (line: string) => {
     connection.sendNotification('status', line)
