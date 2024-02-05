@@ -85,6 +85,15 @@ async function install_compiler() {
     }
   }
 
+  connection.sendNotification('status', 'Checking for updates...')
+  await git.cwd(dir)
+  await git.pull()
+
+  await command('cargo', ['build', '--release'], {cwd: dir}, (line: string) => {
+    connection.sendNotification('status', line)
+  })
+
+  //Final check to make sure that the install went through ok.
   try {
     PROGRAM = dir + '/target/release/aglet.exe'
     fs.statSync(PROGRAM)
@@ -93,30 +102,9 @@ async function install_compiler() {
     try {
       PROGRAM = dir + '/target/release/aglet'
       fs.statSync(PROGRAM)
-    }
-    catch (_) {
-      //The aglet compiler exists but has not been built.
-      connection.sendNotification('status', 'Found Aglet installation. Building...')
-
-      await command('cargo', ['build', '--release'], {cwd: dir}, (line: string) => {
-        connection.sendNotification('status', line)
-      })
-
-      //Final check to make sure that the install went through ok.
-      try {
-        PROGRAM = dir + '/target/release/aglet.exe'
-        fs.statSync(PROGRAM)
-      }
-      catch (_) {
-        try {
-          PROGRAM = dir + '/target/release/aglet'
-          fs.statSync(PROGRAM)
-        } catch (_) {
-          connection.sendNotification('error', 'Failed to build Aglet compiler')
-          return
-        }
-      }
-
+    } catch (_) {
+      connection.sendNotification('error', 'Failed to build Aglet compiler')
+      return
     }
   }
 
