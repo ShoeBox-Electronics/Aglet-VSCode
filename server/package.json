@@ -1,0 +1,20 @@
+{
+  "name": "aglet",
+  "description": "Language support for the Aglet programming language.",
+  "version": "0.0.2",
+  "author": "Shoebox-Electronics",
+  "publisher": "Shoebox Electronics",
+  "engines": {
+    "node": "*"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ShoeBox-Electronics/Aglet-VSCode"
+  },
+  "dependencies": {
+    "rimraf": "^5.0.5",
+    "simple-git": "^3.22.0",
+    "vscode-languageserver": "^8.1.0",
+    "vscode-languageserver-textdocument": "^1.0.8"
+  }
+}

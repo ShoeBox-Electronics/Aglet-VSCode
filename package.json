@@ -1,27 +1,50 @@
 {
   "name": "aglet",
   "displayName": "Aglet",
-  "description": "Syntax highlighter for the Aglet programming language.",
-  "version": "0.0.1",
+  "description": "Syntax highlighter and language support for the Aglet programming language.",
+  "version": "0.0.2",
   "publisher": "Shoebox-Electronics",
+  "engines": {
+    "vscode": ">=1.80.0"
+  },
   "repository": {
     "type": "github",
     "url": "https://github.com/ShoeBox-Electronics/Aglet-VSCode"
   },
-  "engines": {
-    "vscode": ">=1.80.0"
-  },
+  "activationEvents": [
+    "onLanguage"
+  ],
+  "main": "./client/out/extension",
   "contributes": {
-    "languages": [{
-      "id": "aglet",
-      "aliases": ["Aglet", "aglet"],
-      "extensions": [".aglet"],
-      "configuration": "./language-configuration.json"
-    }],
-    "grammars": [{
-      "language": "aglet",
-      "scopeName": "source.aglet",
-      "path": "./syntaxes/aglet.tmLanguage.json"
-    }]
+    "languages": [
+      {
+        "id": "aglet",
+        "aliases": [
+          "Aglet",
+          "aglet"
+        ],
+        "extensions": [
+          ".aglet"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "aglet",
+        "scopeName": "source.aglet",
+        "path": "./syntaxes/aglet.tmLanguage.json"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -b",
+    "watch": "tsc -b -w",
+    "postinstall": "cd client && npm install && cd ../server && npm install && cd .."
+  },
+  "devDependencies": {
+    "@types/node": "^20.5.7",
+    "typescript": "^5.2.2"
   }
 }
