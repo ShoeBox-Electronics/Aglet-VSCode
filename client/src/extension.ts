@@ -1,5 +1,5 @@
 import * as path from "path";
-import { workspace, ExtensionContext } from "vscode";
+import { window, StatusBarAlignment, languages, workspace, ExtensionContext } from "vscode";
 
 import {
   LanguageClient,
@@ -8,9 +8,11 @@ import {
   TransportKind,
 } from "vscode-languageclient/node";
 
-let client: LanguageClient;
+let client: LanguageClient
 
 export function activate(context: ExtensionContext) {
+  const statusBarItem = window.createStatusBarItem(StatusBarAlignment.Left)
+
   // The server is implemented in node
   const serverModule = context.asAbsolutePath(
     path.join("server", "out", "server.js")
@@ -43,6 +45,19 @@ export function activate(context: ExtensionContext) {
     serverOptions,
     clientOptions
   );
+
+  client.onNotification('status', params => {
+    statusBarItem.text = params
+    statusBarItem.show()
+  })
+
+  client.onNotification('hide-status', () => {
+    statusBarItem.hide()
+  })
+
+  client.onNotification('error', params => {
+    window.showErrorMessage(params);
+  })
 
   // Start the client. This will also launch the server
   client.start();
