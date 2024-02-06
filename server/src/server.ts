@@ -90,14 +90,13 @@ async function install_compiler() {
   })
 
   //Final check to make sure that the install went through ok.
+  PROGRAM = dir + '/target/release/aglet.exe'
   try {
-    PROGRAM = dir + '/target/release/aglet.exe'
-    fs.statSync(PROGRAM)
-  }
-  catch (_) {
+    await fs.promises.access(PROGRAM, fs.constants.F_OK)
+  } catch (_) {
     try {
       PROGRAM = dir + '/target/release/aglet'
-      fs.statSync(PROGRAM)
+      await fs.promises.access(PROGRAM, fs.constants.F_OK)
     } catch (_) {
       connection.sendNotification('error', 'Failed to build Aglet compiler')
       return
