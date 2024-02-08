@@ -25,11 +25,11 @@
 			"patterns": [
 				{
 					"name": "keyword.control.aglet",
-					"match": "\\b(ret|if|else)\\b"
+					"match": "\\b(ret|if|else|continue|break)\\b"
 				},
 				{
 					"name": "keyword.aglet",
-					"match": "\\b(let|set|funk)\\b"
+					"match": "\\b(let|set|funk|true|false)\\b"
 				}
 			]
 		},
