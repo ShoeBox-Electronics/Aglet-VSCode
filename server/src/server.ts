@@ -26,6 +26,7 @@ const connection = createConnection(ProposedFeatures.all)
 const documents: TextDocuments<TextDocument> = new TextDocuments(TextDocument)
 
 let INSTALLED: boolean = false
+let INSTALL_ATTEMPTED: boolean = false
 let PROGRAM: string = ''
 
 function command(command: string, args: string[], opts: any, onoutput: any, input_data: string = ''): Promise<void> {
@@ -62,6 +63,7 @@ function command(command: string, args: string[], opts: any, onoutput: any, inpu
 }
 
 async function install_compiler() {
+  INSTALL_ATTEMPTED = true
   const dir = __dirname + '/build'
 
   try { fs.statSync(dir) }
@@ -108,9 +110,6 @@ async function install_compiler() {
 }
 
 connection.onInitialize((params: InitializeParams) => {
-  connection.onInitialized(() => {
-    install_compiler()
-  })
 
   const result: InitializeResult = {
     capabilities: {
@@ -121,7 +120,11 @@ connection.onInitialize((params: InitializeParams) => {
   return result
 });
 
-documents.onDidChangeContent((change) => {
+documents.onDidChangeContent(async (change) => {
+  if (!INSTALL_ATTEMPTED) {
+    await install_compiler()
+  }
+
   if (INSTALLED)
   {
     let diagnostics: Diagnostic[] = [];
