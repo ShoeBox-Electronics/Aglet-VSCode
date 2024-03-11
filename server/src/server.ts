@@ -5,12 +5,11 @@ import {
   InitializeParams,
   TextDocumentSyncKind,
   InitializeResult,
-  CompletionItem,
-  CompletionItemKind,
-  TextDocumentPositionParams,
   Diagnostic,
   DiagnosticSeverity,
-  MarkupContent,
+  SemanticTokenTypes,
+  SemanticTokenModifiers,
+  SemanticTokensLegend,
 } from "vscode-languageserver/node"
 
 import { TextDocument } from "vscode-languageserver-textdocument"
@@ -127,27 +126,42 @@ documents.onDidChangeContent(async (change) => {
 
   if (INSTALLED)
   {
-    let diagnostics: Diagnostic[] = [];
+    let diagnostics: Diagnostic[] = []
+    let constants: number[] = []
+
     const text = change.document.getText().replace(/[\t\n\r]/g, ' ')
 
     command(PROGRAM, ['--language-server', '-'], {timeout: 2000}, (line: string) => {
       const info = line.split('|')
+      const msg_type = info[0]
+      const start = change.document.positionAt(parseInt(info[1]))
+      const stop = change.document.positionAt(parseInt(info[2]))
+
+      if (msg_type === 'C')
+      {
+        constants.push(start.line, start.character, stop.character - start.character)
+        return
+      }
+
+      if (!['E', 'W', 'H', 'I'].includes(msg_type)) return
+
       diagnostics.push({
         severity: {
           E: DiagnosticSeverity.Error,
           W: DiagnosticSeverity.Warning,
           H: DiagnosticSeverity.Hint,
           I: DiagnosticSeverity.Information,
-        }[info[0]],
+        }[msg_type],
         range: {
-          start: change.document.positionAt(parseInt(info[1])),
-          end: change.document.positionAt(parseInt(info[2])),
+          start: start,
+          end: stop,
         },
         message: info[3],
         source: 'Aglet',
       })
     }, text).then(() => {
       connection.sendDiagnostics({ uri: change.document.uri, diagnostics })
+      connection.sendNotification('constants', constants)
     })
   }
 });

@@ -2,7 +2,7 @@
   "name": "aglet",
   "displayName": "Aglet",
   "description": "Syntax highlighter and language support for the Aglet programming language.",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "publisher": "Shoebox-Electronics",
   "engines": {
     "vscode": ">=1.80.0"
